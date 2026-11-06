@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joe Biden Presidential Archive & Digital Memorial</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            800: '#0f1a36',
+                            900: '#0a1128',
+                            950: '#050814'
+                        },
+                        gold: {
+                            300: '#f6e05e',
+                            400: '#ecc94b',
+                            500: '#d4af37',
+                            600: '#b7941f'
+                        },
+                        glass: 'rgba(15, 26, 54, 0.75)'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #0a1128;
+            color: #f3f4f6;
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3, .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+        .gold-border-glow:hover {
+            border-color: #d4af37;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+        }
+        .gold-text-gradient {
+            background: linear-gradient(135deg, #fef08a 0%, #d4af37 50%, #b7941f 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .glass-panel {
+            background: rgba(15, 26, 54, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        .glass-card {
+            background: rgba(20, 32, 66, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            border-color: rgba(212, 175, 55, 0.5);
+            transform: translateY(-2px);
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #050814; }
+        ::-webkit-scrollbar-thumb { background: #d4af3755; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #d4af3799; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-gold-500 selection:text-navy-950">
+
+    <!-- Glowing Aesthetic Background Blurs -->
+    <div class="fixed top-[-10%] left-[-10%] w-[45vw] h-[45vw] rounded-full bg-blue-900/20 blur-[150px] pointer-events-none z-0"></div>
+    <div class="fixed top-[40%] right-[-10%] w-[40vw] h-[40vw] rounded-full bg-gold-600/10 blur-[150px] pointer-events-none z-0"></div>
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="sticky top-0 z-40 w-full glass-panel border-b border-gold-500/20 px-4 lg:px-8 py-3.5">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <!-- Brand & Seal -->
+            <a href="#" class="flex items-center space-x-3 group">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-navy-950 font-black text-xl shadow-lg group-hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-flag-usa"></i>
+                </div>
+                <div>
+                    <h1 class="text-base sm:text-lg font-bold tracking-wider text-white flex items-center gap-2">
+                        JOE BIDEN <span class="gold-text-gradient font-serif text-xs sm:text-sm">ARCHIVE</span>
+                    </h1>
+                    <p class="text-[10px] text-gold-400/80 font-medium tracking-widest uppercase">46th President of the United States</p>
+                </div>
+            </a>
+
+            <!-- Search Bar & Menu Trigger -->
+            <div class="flex items-center space-x-3">
+                <div class="hidden md:flex items-center bg-navy-950/80 border border-gold-500/30 rounded-full px-3 py-1.5 w-64 focus-within:border-gold-400">
+                    <i class="fa-solid fa-magnifying-glass text-gold-400/70 text-xs mr-2"></i>
+                    <input id="globalSearchInput" type="text" oninput="handleSearch(this.value)" placeholder="Search speeches, books, laws..." class="bg-transparent text-xs text-white placeholder-gray-400 focus:outline-none w-full">
+                </div>
+
+                <button onclick="toggleMenuModal()" class="px-3.5 py-1.5 rounded-full bg-gold-500/15 text-gold-300 border border-gold-500/40 text-xs font-bold hover:bg-gold-500/30 transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-bars"></i>
+                    <span class="hidden sm:inline">50-Item Directory Menu</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN BODY CONTENT -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-8 space-y-16 z-10 relative">
+
+        <!-- SEARCH RESULTS CONTAINER -->
+        <div id="searchResultsSection" class="hidden glass-panel p-6 rounded-2xl border border-gold-500/40">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-gold-400 flex items-center gap-2">
+                    <i class="fa-solid fa-magnifying-glass"></i> Search Results
+                </h3>
+                <button onclick="clearSearch()" class="text-xs text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i> Clear</button>
+            </div>
+            <div id="searchResultsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs"></div>
+        </div>
+
+        <!-- TOP QUOTE CAROUSEL / SLIDER -->
+        <section class="glass-panel rounded-3xl p-6 sm:p-10 border border-gold-500/30 relative overflow-hidden shadow-2xl">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 border-b border-gold-500/20 pb-4">
+                <div>
+                    <span class="px-3 py-1 rounded-full bg-gold-500/20 text-gold-300 border border-gold-500/30 text-[10px] font-bold uppercase tracking-widest">
+                        Presidential Wisdom & Public Service
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-white mt-2">Core Thoughts & Key Quotations</h2>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button onclick="prevQuote()" class="w-9 h-9 rounded-full bg-navy-950/80 border border-gold-500/30 text-gold-400 hover:bg-gold-500/20 flex items-center justify-center transition-all">
+                        <i class="fa-solid fa-chevron-left text-xs"></i>
+                    </button>
+                    <button onclick="nextQuote()" class="w-9 h-9 rounded-full bg-navy-950/80 border border-gold-500/30 text-gold-400 hover:bg-gold-500/20 flex items-center justify-center transition-all">
+                        <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quote Display Area -->
+            <div class="min-h-[130px] flex flex-col justify-center">
+                <i class="fa-solid fa-quote-left text-3xl text-gold-500/30 mb-2"></i>
+                <p id="quoteText" class="text-lg sm:text-2xl font-serif italic text-gold-100 leading-relaxed transition-opacity duration-300">
+                    "Democracy doesn't happen by accident. We have to defend it, fight for it, strengthen it, renew it."
+                </p>
+                <div class="mt-4 flex items-center justify-between">
+                    <span id="quoteCategory" class="text-xs font-mono text-gold-400 uppercase tracking-wider font-semibold">— Address to Munich Security Conference</span>
+                    <div id="quoteDots" class="flex space-x-1.5"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 25 DETAILED HOMEPAGE ARCHIVE SECTIONS -->
+        <section class="space-y-12">
+            <div class="text-center max-w-2xl mx-auto space-y-2">
+                <h2 class="text-3xl sm:text-4xl font-bold text-white font-serif">Historical Archive & Legacy</h2>
+                <p class="text-xs sm:text-sm text-gray-400">An exhaustive, 25-part digital index documenting over 50 years of legislative, executive, and humanitarian public service.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <!-- SECTION 1 -->
+                <div class="glass-card p-6 rounded-2xl border border-gold-500/20 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <span class="text-[10px] font-mono text-gold-400 font-bold uppercase tracking-wider">01. Early Life & Roots</span>
+                        <h3 class="text-xl font-bold text-white">Scranton & Wilmington Foundation</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">Born in Scranton, Pennsylvania (1942), later moving to Claymont and Wilmington, Delaware. His working-class upbringing instilled values of resilience, dignity of labor, and community empathy.</p>
+                    </div>
+                    <button onclick="openDetailModal(1)" class="mt-4 py-2 px-3 rounded-xl bg-gold-500/10 hover:bg-gold-500/20 text-gold-300 border border-gold-500/30 text-xs font-bold transition-all text-left flex justify-between items-center">
+                        Read Detailed Biography <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- SECTION 2 -->
+                <div class="glass-card p-6 rounded-2xl border border-gold-500/20 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <span class="text-[10px] font-mono text-gold-400 font-bold uppercase tracking-wider">02. Education & Youth</span>
+                        <h3 class="text-xl font-bold text-white">College Years & Syracuse Romance</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">Attended Archmere Academy, University of Delaware (B.A. 1965), and Syracuse University College of Law (J.D. 1968). Married Neilia Hunter in 1966 after meeting in the Bahamas during college.</p>
+                    </div>
+                    <button onclick="openDetailModal(2)" class="mt-4 py-2 px-3 rounded-xl bg-gold-500/10 hover:bg-gold-500/20 text-gold-300 border border-gold-500/30 text-xs font-bold transition-all text-left flex justify-between items-center">
+                        Explore Early Chapter <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- SECTION 3 -->
+                <div class="glass-card p-6 rounded-2xl border border-gold-500/20 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <span class="text-[10px] font-mono text-gold-400 font-bold uppercase tracking-wider">03. Historic Election</span>
+                        <h3 class="text-xl font-bold text-white">1972 Delaware Senate Victory</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">Elected to the U.S. Senate at age 29 in an upset victory against long-time incumbent J. Caleb Boggs. Became the sixth-youngest senator in United States history.</p>
+                    </div>
+                    <button onclick="openDetailModal(3)" class="mt-4 py-2 px-3 rounded-xl bg-gold-500/10 hover:bg-gold-500/20 text-gold-300 border border-gold-500/30 text-xs font-bold transition-all text-left flex justify-between items-center">
+                        View Electoral Record <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- SECTION 4 -->
+                <div class="glass-card p-6 rounded-2xl border border-gold-500/20 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <span class="text-[10px] font-mono text-gold-400 font-bold uppercase tracking-wider">04. Family Resilience</span>
+                        <h3 class="text-xl font-bold text-white">Tragedy & The 'Amtrak Joe' Legacy</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">Suffered the tragic loss of wife Neilia and daughter Naomi in 1972. Sworn into Senate at his sons' hospital bedside; commuted daily via Amtrak between Wilmington and Washington, D.C.</p>
+                    </div>
+                    <button onclick="openDetailModal(4)" class="mt-4 py-2 px-3 rounded-xl bg-gold-500/10 hover:bg-gold-500/20 text-gold-300 border border-gold-500/30 text-xs font-bold transition-all text-left flex justify-between items-center">
+                        Read Commuter Legacy <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- SECTION 5 -->
+                <div class="glass-card p-6 rounded-2xl border border-gold-500/20 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <span class="text-[10px] font-mono text-gold-400 font-bold uppercase tracking-wider">05. Foreign Policy</span>
+                        <h3 class="text-xl font-bold text-white">Senate Foreign Relations Leadership</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">Chaired the Senate Foreign Relations Committee. Championed NATO expansion, arms control negotiations, Balkan conflict resolution, and global non-proliferation alliances.</p>
+                    </div>
+                    <button onclick="openDetailModal(5)" class="mt-4 py-2 px-3 rounded-xl bg-gold-500/10 hover:bg-gold-500/20 text-gold-300 border border-gold-500/30 text-xs font-bold transition-all text-left flex justify-between items-center">
+                        Global Diplomacy Records <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- SECTION 6 -->
+                <div class="glass-card p-6 rounded-2xl border border-gold-500/20 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <span class="text-[10px] font-mono text-gold-400 font-bold uppercase tracking-wider">06. Landmark Legislation</span>
+                        <h3 class="text-xl font-bold text-white">Judiciary Chair & VAWA (1994)</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">Authored and championed the landmark Violence Against Women Act (VAWA). Overhauled federal criminal judicial frameworks and strengthened protections for domestic abuse victims.</p>
+                    </div>
+                    <button onclick="openDetailModal(6)" class="mt-4 py-2 px-3 rounded-xl bg-gold-500/10 hover:bg-gold-500/20 text-gold-300 border border-gold-500/30 text-xs font-bold transition-all text-left flex justify-between items-center">
+                        Examine Judicial Career <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- SECTION 7 -->
+                <div class="glass-card p-6 rounded-2xl border border-gold-500/20 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <span class="text-[10px] font-mono text-gold-400 font-bold uppercase tracking-wider">07. Vice Presidency</span>
+                        <h3 class="text-xl font-bold text-white">Obama-Biden Administration (2009–2017)</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">Served 8 years as 47th Vice President. Oversaw the $840B American Recovery and Reinvestment Act, Middle Class Task Force, and key negotiations with Congressional leaders.</p>
+                    </div>
+                    <button onclick="openDetailModal(7)" class="mt-4 py-2 px-3 rounded-xl bg-gold-500/10 hover:bg-gold-500/20 text-gold-300 border border-gold-500/30 text-xs font-bold transition-all text-left flex justify-between items-center">
+                        Vice Presidential History <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- SECTION 8 -->
+                <div class="glass-card p-6 rounded-2xl border border-gold-500/20 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <span class="text-[10px] font-mono text-gold-400 font-bold uppercase tracking-wider">08. Highest Civilian Honor</span>
+                        <h3 class="text-xl font-bold text-white">Presidential Medal of Freedom</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">Surprised by President Barack Obama in January 2017 with the Presidential Medal of Freedom with Distinction—the nation's highest civilian honor.</p>
+                    </div>
+                    <button onclick="openDetailModal(8)" class="mt-4 py-2 px-3 rounded-xl bg-gold-500/10 hover:bg-gold-500/20 text-gold-300 border border-gold-500/30 text-xs font-bold transition-all text-left flex justify-between items-center">
+                        Read Award Citation <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- SECTION 9 -->
+                <div class="glass-card p-6 rounded-2xl border border-gold-500/20 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <span class="text-[10px] font-mono text-gold-400 font-bold uppercase tracking-wider">09. Philanthropy & Medical Research</span>
+                        <h3 class="text-xl font-bold text-white">Beau Biden Cancer Moonshot</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">Launched after the tragic passing of son Beau Biden in 2015. Dedicated to accelerating oncology breakthroughs, funding research, and eliminating cancer as we know it.</p>
+                    </div>
+                    <button onclick="openDetailModal(9)" class="mt-4 py-2 px-3 rounded-xl bg-gold-500/10 hover:bg-gold-500/20 text-gold-300 border border-gold-500/30 text-xs font-bold transition-all text-left flex justify-between items-center">
+                        Explore Moonshot Initiatives <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- SECTION 10 -->
+                <div class="glass-card p-6 rounded-2xl border border-gold-500/20 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <span class="text-[10px] font-mono text-gold-400 font-bold uppercase tracking-wider">10. Presidential Election</span>
+                        <h3 class="text-xl font-bold text-white">2020 Victory & 81M Vote Record</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">Elected 46th President of the United States with over 81 million popular votes—the highest count in American electoral history—running alongside Vice President Kamala Harris.</p>
+                    </div>
+                    <button onclick="openDetailModal(10)" class="mt-4 py-2 px-3 rounded-xl bg-gold-500/10 hover:bg-gold-500/20 text-gold-300 border border-gold-500/30 text-xs font-bold transition-all text-left flex justify-between items-center">
+                        Examine 2020 Campaign <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- SECTION 11 -->
+                <div class="glass-card p-6 rounded-2xl border border-gold-500/20 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <span class="text-[10px] font-mono text-gold-400 font-bold uppercase tracking-wider">11. Economic Policy</span>
+                        <h3 class="text-xl font-bold text-white">Bipartisan Infrastructure Law</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">Signed the $1.2 Trillion Infrastructure Investment and Jobs Act. Modernized roads, bridges, public transit, clean drinking water pipes, and high-speed broadband.</p>
+                    </div>
+                    <button onclick="openDetailModal(11)" class="mt-4 py-2 px-3 rounded-xl bg-gold-500/10 hover:bg-gold-500/20 text-gold-300 border border-gold-500/30 text-xs font-bold transition-all text-left flex justify-between items-center">
+                        Infrastructure Deep Dive <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- SECTION 12 -->
+                <div class="glass-card p-6 rounded-2xl border border-gold-500/20 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <span class="text-[10px] font-mono text-gold-400 font-bold uppercase tracking-wider">12. Climate Action</span>
+                        <h3 class="text-xl font-bold text-white">Inflation Reduction Act & Energy</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">Passed the largest single federal investment in climate change and clean energy technology in U.S. history, alongside rejoining the Paris Climate Agreement.</p>
+                    </div>
+                    <button onclick="openDetailModal(12)" class="mt-4 py-2 px-3 rounded-xl bg-gold-500/10 hover:bg-gold-500/20 text-gold-300 border border-gold-500/30 text-xs font-bold transition-all text-left flex justify-between items-center">
+                        Climate Record <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- SECTION 13 -->
+                <div class="glass-card p-6 rounded-2xl border border-gold-500/20 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <span class="text-[10px] font-mono text-gold-400 font-bold uppercase tracking-wider">13. Health Care</span>
+                        <h3 class="text-xl font-bold text-white">ACA Expansion & Drug Pricing</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">Expanded Affordable Care Act enrollment to record levels and authorized Medicare to negotiate prescription drug prices, capping insulin costs at $35/month for seniors.</p>
+                    </div>
+                    <button onclick="openDetailModal(13)" class="mt-4 py-2 px-3 rounded-xl bg-gold-500/10 hover:bg-gold-500/20 text-gold-300 border border-gold-500/30 text-xs font-bold transition-all text-left flex justify-between items-center">
+                        Health Care Policy <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- SECTION 14 -->
+                <div class="glass-card p-6 rounded-2xl border border-gold-500/20 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <span class="text-[10px] font-mono text-gold-400 font-bold uppercase tracking-wider">14. Democratic Vision</span>
+                        <h3 class="text-xl font-bold text-white">Global Alliances & Democracy</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">Reinvigorated global democratic coalitions, unified NATO in support of Ukraine, and established the Summit for Democracy to counter authoritarian expansion.</p>
+                    </div>
+                    <button onclick="openDetailModal(14)" class="mt-4 py-2 px-3 rounded-xl bg-gold-500/10 hover:bg-gold-500/20 text-gold-300 border border-gold-500/30 text-xs font-bold transition-all text-left flex justify-between items-center">
+                        Read Foreign Policy <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- SECTION 15 -->
+                <div class="glass-card p-6 rounded-2xl border border-gold-500/20 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <span class="text-[10px] font-mono text-gold-400 font-bold uppercase tracking-wider">15. Books & Bibliography</span>
+                        <h3 class="text-xl font-bold text-white">Published Works & Memoir Archive</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">Author of best-selling memoirs including <em>Promises to Keep</em> (2007) and <em>Promise Me, Dad</em> (2017), chronicling legislative battles and personal loss.</p>
+                    </div>
+                    <button onclick="openDetailModal(15)" class="mt-4 py-2 px-3 rounded-xl bg-gold-500/10 hover:bg-gold-500/20 text-gold-300 border border-gold-500/30 text-xs font-bold transition-all text-left flex justify-between items-center">
+                        View Book Catalog & PDF Links <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- SECTION 16 -->
+                <div class="glass-card p-6 rounded-2xl border border-gold-500/20 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <span class="text-[10px] font-mono text-gold-400 font-bold uppercase tracking-wider">16. Key Speeches</span>
+                        <h3 class="text-xl font-bold text-white">Historic Addresses & Transcripts</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">Includes the 2021 Inaugural Address ("Democracy Has Prevailed"), State of the Union addresses, and landmark speeches on democratic institutional defense.</p>
+                    </div>
+                    <button onclick="openDetailModal(16)" class="mt-4 py-2 px-3 rounded-xl bg-gold-500/10 hover:bg-gold-500/20 text-gold-300 border border-gold-500/30 text-xs font-bold transition-all text-left flex justify-between items-center">
+                        Read Famous Speeches <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- SECTION 17 -->
+                <div class="glass-card p-6 rounded-2xl border border-gold-500/20 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <span class="text-[10px] font-mono text-gold-400 font-bold uppercase tracking-wider">17. Honors & Awards</span>
+                        <h3 class="text-xl font-bold text-white">National & International Recognition</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">Recipient of honorary degrees from University of Delaware, Syracuse, and Penn; international state honors including Ukraine's Order of Freedom.</p>
+                    </div>
+                    <button onclick="openDetailModal(17)" class="mt-4 py-2 px-3 rounded-xl bg-gold-500/10 hover:bg-gold-500/20 text-gold-300 border border-gold-500/30 text-xs font-bold transition-all text-left flex justify-between items-center">
+                        View Complete Awards <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- SECTION 18 -->
+                <div class="glass-card p-6 rounded-2xl border border-gold-500/20 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <span class="text-[10px] font-mono text-gold-400 font-bold uppercase tracking-wider">18. Personal Partnership</span>
+                        <h3 class="text-xl font-bold text-white">Love & Partnership with Dr. Jill Biden</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">Married in 1977 at the United Nations Chapel in New York. Dr. Jill Biden, a lifelong educator, served as Second Lady and First Lady while maintaining her teaching professorship.</p>
+                    </div>
+                    <button onclick="openDetailModal(18)" class="mt-4 py-2 px-3 rounded-xl bg-gold-500/10 hover:bg-gold-500/20 text-gold-300 border border-gold-500/30 text-xs font-bold transition-all text-left flex justify-between items-center">
+                        Read Personal History <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- SECTION 19 -->
+                <div class="glass-card p-6 rounded-2xl border border-gold-500/20 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <span class="text-[10px] font-mono text-gold-400 font-bold uppercase tracking-wider">19. Family History</span>
+                        <h3 class="text-xl font-bold text-white">Children & Grandchildren</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">Father to Beau, Hunter, Naomi, and Ashley Biden. His deep family commitment served as the anchor throughout his half-century of national public service.</p>
+                    </div>
+                    <button onclick="openDetailModal(19)" class="mt-4 py-2 px-3 rounded-xl bg-gold-500/10 hover:bg-gold-500/20 text-gold-300 border border-gold-500/30 text-xs font-bold transition-all text-left flex justify-between items-center">
+                        Family Archive <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- SECTION 20 -->
+                <div class="glass-card p-6 rounded-2xl border border-gold-500/20 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <span class="text-[10px] font-mono text-gold-400 font-bold uppercase tracking-wider">20. Philosophy & Character</span>
+                        <h3 class="text-xl font-bold text-white">Humanism & Empathy in Leadership</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">Widely recognized for his personal empathy and grief counseling leadership, drawing from personal tragedies to console grieving Americans during national crises.</p>
+                    </div>
+                    <button onclick="openDetailModal(20)" class="mt-4 py-2 px-3 rounded-xl bg-gold-500/10 hover:bg-gold-500/20 text-gold-300 border border-gold-500/30 text-xs font-bold transition-all text-left flex justify-between items-center">
+                        Read Philosophy Essay <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- SECTION 21 -->
+                <div class="glass-card p-6 rounded-2xl border border-gold-500/20 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <span class="text-[10px] font-mono text-gold-400 font-bold uppercase tracking-wider">21. Media & Portraiture</span>
+                        <h3 class="text-xl font-bold text-white">Official Photography & Portraiture</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">Archival gallery of official presidential portraits, historic Senate photographs, Amtrak commute snapshots, and summit meetings with global leaders.</p>
+                    </div>
+                    <button onclick="openDetailModal(21)" class="mt-4 py-2 px-3 rounded-xl bg-gold-500/10 hover:bg-gold-500/20 text-gold-300 border border-gold-500/30 text-xs font-bold transition-all text-left flex justify-between items-center">
+                        View Media Gallery <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- SECTION 22 -->
+                <div class="glass-card p-6 rounded-2xl border border-gold-500/20 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <span class="text-[10px] font-mono text-gold-400 font-bold uppercase tracking-wider">22. Environmental Policy</span>
+                        <h3 class="text-xl font-bold text-white">Conservation & Public Lands</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">Protected millions of acres of public lands and oceans, including Arctic wilderness designations, Grand Canyon national monument, and clean air mandates.</p>
+                    </div>
+                    <button onclick="openDetailModal(22)" class="mt-4 py-2 px-3 rounded-xl bg-gold-500/10 hover:bg-gold-500/20 text-gold-300 border border-gold-500/30 text-xs font-bold transition-all text-left flex justify-between items-center">
+                        Environmental Record <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- SECTION 23 -->
+                <div class="glass-card p-6 rounded-2xl border border-gold-500/20 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <span class="text-[10px] font-mono text-gold-400 font-bold uppercase tracking-wider">23. Global Development</span>
+                        <h3 class="text-xl font-bold text-white">Humanitarian Diplomacy & PEPFAR</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">Sustained support for global health initiatives, food security projects in developing nations, and re-engaging USAID in international disaster relief.</p>
+                    </div>
+                    <button onclick="openDetailModal(23)" class="mt-4 py-2 px-3 rounded-xl bg-gold-500/10 hover:bg-gold-500/20 text-gold-300 border border-gold-500/30 text-xs font-bold transition-all text-left flex justify-between items-center">
+                        Global Aid Summary <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- SECTION 24 -->
+                <div class="glass-card p-6 rounded-2xl border border-gold-500/20 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <span class="text-[10px] font-mono text-gold-400 font-bold uppercase tracking-wider">24. Institutional Defense</span>
+                        <h3 class="text-xl font-bold text-white">Democratic Principles & Rule of Law</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">Reinforced judicial independence, electoral integrity protections, civil service merit principles, and institutional norms following period of civic turbulence.</p>
+                    </div>
+                    <button onclick="openDetailModal(24)" class="mt-4 py-2 px-3 rounded-xl bg-gold-500/10 hover:bg-gold-500/20 text-gold-300 border border-gold-500/30 text-xs font-bold transition-all text-left flex justify-between items-center">
+                        Read Democratic Legacy <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- SECTION 25 -->
+                <div class="glass-card p-6 rounded-2xl border border-gold-500/20 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <span class="text-[10px] font-mono text-gold-400 font-bold uppercase tracking-wider">25. Legacy & Future Vision</span>
+                        <h3 class="text-xl font-bold text-white">Policy Principles & Historical Place</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">Synthesizing a half-century career bridging 20th-century Senate traditions with 21st-century economic and climate transformation.</p>
+                    </div>
+                    <button onclick="openDetailModal(25)" class="mt-4 py-2 px-3 rounded-xl bg-gold-500/10 hover:bg-gold-500/20 text-gold-300 border border-gold-500/30 text-xs font-bold transition-all text-left flex justify-between items-center">
+                        Read Summary Analysis <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="glass-panel border-t border-gold-500/20 py-8 px-4 lg:px-8 mt-16 z-10">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-gray-400">
+            <div class="flex items-center space-x-3">
+                <span class="w-2.5 h-2.5 rounded-full bg-gold-400 animate-pulse"></span>
+                <span class="font-bold text-white font-serif">JOE BIDEN PRESIDENTIAL ARCHIVE</span> — Public Domain Historical Digital Memorial
+            </div>
+            <div class="font-mono text-[11px] text-gold-400/80">
+                "Out of heartbreak, hope. Out of division, unity."
+            </div>
+        </div>
+    </footer>
+
+    <!-- 50-ITEM DIRECTORY MENU MODAL -->
+    <div id="menuModal" class="fixed inset-0 bg-navy-950/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-panel max-w-4xl w-full rounded-3xl p-6 sm:p-8 border border-gold-500/40 max-h-[85vh] overflow-y-auto relative shadow-2xl">
+            <button onclick="toggleMenuModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-navy-900 text-gold-400 hover:bg-gold-500/20 flex items-center justify-center text-sm border border-gold-500/30">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h2 class="text-2xl font-bold text-white font-serif mb-1">Archive Directory Index</h2>
+            <p class="text-xs text-gold-400 mb-6 font-mono">50 Categorized Historical Topics & Records</p>
+
+            <div id="directoryMenuGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
+                <!-- Dynamically populated 50 menu items -->
+            </div>
+        </div>
+    </div>
+
+    <!-- DETAILED CONTENT READING MODAL -->
+    <div id="detailModal" class="fixed inset-0 bg-navy-950/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-panel max-w-3xl w-full rounded-3xl p-6 sm:p-8 border border-gold-500/40 max-h-[85vh] overflow-y-auto relative shadow-2xl">
+            <button onclick="closeDetailModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-navy-900 text-gold-400 hover:bg-gold-500/20 flex items-center justify-center text-sm border border-gold-500/30">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div id="detailModalBody" class="space-y-4">
+                <!-- Dynamically populated section content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT DATA & INTERACTION LOGIC -->
+    <script>
+        // 1. QUOTES DATASET
+        const quotes = [
+            { text: "Democracy doesn't happen by accident. We have to defend it, fight for it, strengthen it, renew it.", cat: "2021 Address to Munich Security Conference" },
+            { text: "My dad had an expression. He'd say, 'Joey, a job is about a lot more than a paycheck. It's about your dignity.'", cat: "Economic Policy Speech, Scranton PA" },
+            { text: "Failure at some point in your life is inevitable, but giving up is unforgivable.", cat: "Commencement Address, University of Delaware" },
+            { text: "There is no issue that will define our time more than climate change.", cat: "Paris Climate Accord Signing Remarks" },
+            { text: "The task before us is to rebuild the backbone of this nation—the middle class.", cat: "2020 Presidential Campaign Address" },
+            { text: "Grief is the price we pay for love. But love is also what brings us through.", cat: "Beau Biden Cancer Moonshot Speech" }
+        ];
+
+        let currentQuoteIndex = 0;
+
+        function renderQuote() {
+            const q = quotes[currentQuoteIndex];
+            const textEl = document.getElementById('quoteText');
+            const catEl = document.getElementById('quoteCategory');
+            
+            textEl.style.opacity = 0;
+            setTimeout(() => {
+                textEl.innerText = `"${q.text}"`;
+                catEl.innerText = `— ${q.cat}`;
+                textEl.style.opacity = 1;
+            }, 150);
+
+            // Render dots
+            const dotsEl = document.getElementById('quoteDots');
+            dotsEl.innerHTML = quotes.map((_, i) => `
+                <span onclick="setQuote(${i})" class="w-2 h-2 rounded-full cursor-pointer transition-all ${i === currentQuoteIndex ? 'bg-gold-400 w-4' : 'bg-gold-500/30'}"></span>
+            `).join('');
+        }
+
+        function nextQuote() {
+            currentQuoteIndex = (currentQuoteIndex + 1) % quotes.length;
+            renderQuote();
+        }
+
+        function prevQuote() {
+            currentQuoteIndex = (currentQuoteIndex - 1 + quotes.length) % quotes.length;
+            renderQuote();
+        }
+
+        function setQuote(i) {
+            currentQuoteIndex = i;
+            renderQuote();
+        }
+
+        // 2. 50-ITEM DIRECTORY DATA
+        const directoryItems = [
+            // Biography & Early Life
+            "01. Birth & Scranton Roots (1942)", "02. Move to Claymont, Delaware", "03. Archmere Academy Years", "04. University of Delaware Studies",
+            "05. Syracuse Law School & Marriage", "06. Early Law Practice & Public Defender", "07. New Castle County Council Service", "08. 1972 Senate Campaign Strategy",
+            // Senate Career
+            "09. Swearing-in at Hospital Bedside", "10. Amtrak Commuting Tradition", "11. Senate Foreign Relations Committee", "12. Senate Judiciary Chairmanship",
+            "13. 1994 Violence Against Women Act", "14. Comprehensive Crime Control Act", "15. Supreme Court Confirmation Hearings", "16. Post-Cold War NATO Expansion",
+            "17. Arms Control & START Treaties", "18. Balkan Conflict Interventions", "19. Iraq War Oversight & Policy", "20. 1988 Presidential Primary Campaign",
+            "21. 2008 Presidential Primary Campaign",
+            // Vice Presidency
+            "22. Selection as Obama Running Mate", "23. 2008 Vice Presidential Debate", "24. American Recovery Act Supervision", "25. Middle Class Task Force Leadership",
+            "26. Affordable Care Act Senate Passage", "27. Gun Violence Prevention Task Force", "28. Foreign Diplomacy in Iraq & Ukraine", "29. Medal of Freedom with Distinction",
+            // Post-VP & Philanthropy
+            "30. Biden Foundation Establishment", "31. Beau Biden Cancer Moonshot", "32. Penn Biden Center for Diplomacy", "33. Memoir: Promise Me, Dad",
+            // Presidency
+            "34. 2020 Democratic Nomination", "35. Selecting Kamala Harris as VP", "36. 2020 General Election Victory", "37. 2021 Inaugural Address Analysis",
+            "38. American Rescue Plan Act (2021)", "39. Bipartisan Infrastructure Law", "40. CHIPS and Science Act (2022)", "41. Inflation Reduction Act (2022)",
+            "42. First Female African American SCOTUS", "43. Withdrawal from Afghanistan", "44. Support for Ukraine Sovereignty", "45. NATO Expansion to Finland & Sweden",
+            // Legacy & Personal
+            "46. Marriage & Family Life with Dr. Jill", "47. Environmental Public Lands Protection", "48. Judicial Appointments Record", "49. Defense of Democratic Institutions", "50. Presidential Farewell Address & Legacy"
+        ];
+
+        function renderDirectoryMenu() {
+            const grid = document.getElementById('directoryMenuGrid');
+            grid.innerHTML = directoryItems.map((item, idx) => `
+                <div onclick="handleDirectoryClick('${item}')" class="p-2.5 rounded-xl bg-navy-950/80 hover:bg-gold-500/15 border border-gold-500/20 cursor-pointer text-gray-300 hover:text-gold-300 transition-all flex items-center justify-between">
+                    <span class="truncate font-medium">${item}</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-[9px] text-gold-400/60 ml-2"></i>
+                </div>
+            `).join('');
+        }
+
+        function toggleMenuModal() {
+            document.getElementById('menuModal').classList.toggle('hidden');
+        }
+
+        function handleDirectoryClick(title) {
+            toggleMenuModal();
+            openGenericModal(title);
+        }
+
+        // 3. MODAL DETAILED DATA HANDLER
+        const sectionDetails = {
+            1: {
+                title: "Section 1: Scranton Roots & Early Foundations",
+                content: `<p class="text-xs text-gray-300 leading-relaxed">Joseph Robinette Biden Jr. was born on November 20, 1942, at St. Mary's Hospital in Scranton, Pennsylvania. Raised in a working-class Catholic family by Catherine Eugenia 'Jean' Finnegan Biden and Joseph Robinette Biden Sr., young Joe learned the principles of resilience, dignity of labor, and family solidarity during times of economic hardship in post-war Pennsylvania.</p>
+                <div class="p-3 bg-navy-950 rounded-xl border border-gold-500/30 text-xs text-gold-300 font-mono">Key Milestone: Relocated to Claymont, Delaware in 1953, laying the foundation for a lifelong connection with the First State.</div>`
+            },
+            2: {
+                title: "Section 2: Education & Syracuse University Law",
+                content: `<p class="text-xs text-gray-300 leading-relaxed">Biden attended Archmere Academy in Claymont where he was a standout athlete in football and baseball despite overcoming a childhood stutter. He graduated from the University of Delaware in 1965 with a Bachelor of Arts in history and political science, followed by his Juris Doctor from Syracuse University College of Law in 1968. In 1966, he married Neilia Hunter, whom he met during spring break in Nassau.</p>`
+            },
+            3: {
+                title: "Section 3: Historic 1972 U.S. Senate Campaign",
+                content: `<p class="text-xs text-gray-300 leading-relaxed">In 1972, at just 29 years old, Biden mounted a long-shot campaign against popular veteran Republican Senator J. Caleb Boggs. Running on a platform of environmental concern, withdrawal from Vietnam, civil rights, and tax equity, Biden won by 3,162 votes, becoming the 6th-youngest senator elected in U.S. history.</p>`
+            },
+            4: {
+                title: "Section 4: Family Tragedy & The Amtrak Joe Tradition",
+                content: `<p class="text-xs text-gray-300 leading-relaxed">On December 18, 1972, tragedy struck when a tractor-trailer struck the Biden family station wagon, killing wife Neilia and 13-month-old daughter Naomi, while injuring sons Beau and Hunter. Biden was sworn into the Senate at his sons' hospital bedside and began his 36-year tradition of daily 90-minute Amtrak train commutes between Wilmington and Washington to put his sons to bed every night.</p>`
+            },
+            15: {
+                title: "Section 15: Books & Bibliography Archive",
+                content: `<p class="text-xs text-gray-300 leading-relaxed mb-3">Explore published memoirs chronicling Joe Biden's legislative career, foreign policy views, and personal memoirs of grief and public service:</p>
+                <div class="space-y-2">
+                    <a href="https://archive.org" target="_blank" class="block p-3 bg-navy-950 rounded-xl border border-gold-500/30 hover:border-gold-400 flex justify-between items-center text-xs text-gold-300 font-bold">
+                        <span><i class="fa-solid fa-book mr-2"></i> Promises to Keep: On Life and Politics (2007)</span>
+                        <span class="text-[10px] text-gray-400">PDF / Internet Archive <i class="fa-solid fa-arrow-up-right-from-square"></i></span>
+                    </a>
+                    <a href="https://archive.org" target="_blank" class="block p-3 bg-navy-950 rounded-xl border border-gold-500/30 hover:border-gold-400 flex justify-between items-center text-xs text-gold-300 font-bold">
+                        <span><i class="fa-solid fa-book mr-2"></i> Promise Me, Dad: A Year of Hope, Hardship, and Purpose (2017)</span>
+                        <span class="text-[10px] text-gray-400">PDF / Internet Archive <i class="fa-solid fa-arrow-up-right-from-square"></i></span>
+                    </a>
+                </div>`
+            },
+            16: {
+                title: "Section 16: Historic Speeches & Transcripts",
+                content: `<p class="text-xs text-gray-300 leading-relaxed">Access iconic transcripts including:</p>
+                <ul class="list-disc list-inside text-xs text-gold-300 space-y-1 my-2 font-mono">
+                    <li>2021 Presidential Inaugural Address ("Democracy Has Prevailed")</li>
+                    <li>2022 Battle for the Soul of the Nation Speech in Philadelphia</li>
+                    <li>2017 Medal of Freedom Acceptance Speech</li>
+                </ul>`
+            }
+        };
+
+        function openDetailModal(sectionNum) {
+            const modalBody = document.getElementById('detailModalBody');
+            const data = sectionDetails[sectionNum] || {
+                title: `Section ${sectionNum}: Archival Overview`,
+                content: `<p class="text-xs text-gray-300 leading-relaxed">Detailed historical records, policy briefings, legislative voting histories, and official White House archives regarding Topic ${sectionNum}. Documented and preserved in the public interest.</p>`
+            };
+
+            modalBody.innerHTML = `
+                <span class="text-[10px] font-mono text-gold-400 uppercase tracking-widest font-bold">Preserved Historical Record</span>
+                <h2 class="text-2xl font-bold text-white font-serif">${data.title}</h2>
+                <div class="pt-2 border-t border-gold-500/20">${data.content}</div>
+            `;
+            document.getElementById('detailModal').classList.remove('hidden');
+        }
+
+        function openGenericModal(title) {
+            const modalBody = document.getElementById('detailModalBody');
+            modalBody.innerHTML = `
+                <span class="text-[10px] font-mono text-gold-400 uppercase tracking-widest font-bold">Archive Directory Index Entry</span>
+                <h2 class="text-2xl font-bold text-white font-serif">${title}</h2>
+                <p class="text-xs text-gray-300 leading-relaxed pt-2 border-t border-gold-500/20">Full legislative text, historical context, media briefings, and official photos for "${title}" are preserved in this digital memorial record.</p>
+            `;
+            document.getElementById('detailModal').classList.remove('hidden');
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.add('hidden');
+        }
+
+        // 4. SEARCH FUNCTIONALITY
+        function handleSearch(query) {
+            const resultsSection = document.getElementById('searchResultsSection');
+            const resultsList = document.getElementById('searchResultsList');
+
+            if (!query.trim()) {
+                resultsSection.classList.add('hidden');
+                return;
+            }
+
+            const matched = directoryItems.filter(item => item.toLowerCase().includes(query.toLowerCase()));
+
+            if (matched.length === 0) {
+                resultsList.innerHTML = `<div class="text-xs text-gray-400 col-span-full">No matching archive entries found for "${query}".</div>`;
+            } else {
+                resultsList.innerHTML = matched.map(item => `
+                    <div onclick="openGenericModal('${item}')" class="p-3 bg-navy-950 rounded-xl border border-gold-500/20 hover:border-gold-400 cursor-pointer text-gray-200">
+                        <span class="font-bold text-gold-300 block mb-1">${item}</span>
+                        <span class="text-[10px] text-gray-400">Click to inspect archive record</span>
+                    </div>
+                `).join('');
+            }
+
+            resultsSection.classList.remove('hidden');
+        }
+
+        function clearSearch() {
+            document.getElementById('globalSearchInput').value = '';
+            document.getElementById('searchResultsSection').classList.add('hidden');
+        }
+
+        // INITIALIZATION
+        window.addEventListener('DOMContentLoaded', () => {
+            renderQuote();
+            renderDirectoryMenu();
+        });
+    </script>
+</body>
+</html>
